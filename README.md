@@ -2,6 +2,12 @@
 
 A restaurant recommendation agent built with Node.js, Express, Groq, and Stagehand.
 
+## Overview
+
+Mano is an AI-powered restaurant recommendation system that helps users find and learn about restaurants that match their preferences. Using natural language conversations, users can specify their dining preferences and receive personalized recommendations complete with menu details, prices, and ratings.
+
+The system uses the Groq API with DeepSeek's powerful language model to understand user requests, Google Places API to find relevant restaurants, and Browserbase's Stagehand for scraping menu information from restaurant websites.
+
 ## Features
 
 - Express server with REST API endpoint
@@ -44,15 +50,17 @@ npm start
 
 ```
 src/
+├── agent/          # AI agent components
+│   ├── Tool.ts                # Base tool definition
+│   ├── findRestaurantTool.ts  # Google Places API tool
+│   ├── useBrowserTool.ts      # Browser automation tool
+│   └── restaurantAgent.ts     # Main agent implementation
 ├── config/         # Configuration files
 │   └── env.ts      # Environment variables validation
 ├── controllers/    # Request handlers
 │   └── restaurantController.ts
 ├── routes/         # API routes
 │   └── restaurant.ts
-├── services/       # Business logic
-│   ├── groq.ts     # Groq API integration
-│   └── stagehand.ts # Browser automation
 ├── types/          # TypeScript type definitions
 │   └── index.ts
 └── index.ts        # Application entry point
@@ -74,23 +82,50 @@ Request body:
 Response:
 ```json
 {
-  "response": "AI-generated response about restaurant recommendations",
-  "restaurants": [
-    {
-      "name": "Restaurant Name",
-      "address": "123 Main St, Boston, MA",
-      "rating": 4.5,
-      "price_level": 2,
-      "place_id": "google_place_id",
-      "menu": [
-        {
-          "name": "Spaghetti Carbonara",
-          "description": "Classic pasta dish with eggs, cheese, pancetta, and pepper",
-          "price": "$18.99"
-        }
-      ],
-      "menu_source": "https://restaurant-website.com/menu"
-    }
-  ]
+  "result": {
+    "response": "Based on your request, I've found several great Italian restaurants in Boston known for their pasta dishes:\n\n1. **Giacomo's Ristorante** - A beloved local favorite with homemade pasta and rich sauces. Their butternut squash ravioli with sage brown butter is exceptional.\n\n2. **Sportello** - Modern Italian restaurant with handmade pasta by award-winning chef Barbara Lynch. Their tagliatelle with bolognese is outstanding.\n\n3. **Rino's Place** - Authentic family-owned spot with generous portions and incredible homemade pastas. The lobster ravioli is a must-try.\n\nMy top recommendation would be **Giacomo's Ristorante** for their consistently excellent pasta dishes, reasonable prices, and authentic Italian atmosphere. Would you like more details about any of these restaurants?",
+    "restaurants": [
+      {
+        "name": "Giacomo's Ristorante",
+        "address": "355 Hanover St, Boston, MA 02113",
+        "rating": 4.7,
+        "price_level": 2,
+        "place_id": "ChIJLbDVR6dwcUYRmNrxD0_O2zA",
+        "menu": [
+          {
+            "name": "Butternut Squash Ravioli",
+            "description": "Handmade ravioli filled with butternut squash, served with sage brown butter sauce and topped with toasted walnuts",
+            "price": "$21.99"
+          },
+          {
+            "name": "Linguine Frutti di Mare",
+            "description": "Fresh linguine with clams, mussels, shrimp, and calamari in a light tomato sauce",
+            "price": "$25.99"
+          }
+        ],
+        "menu_source": "https://giacomosristorante-boston.com/menu"
+      }
+    ]
+  }
 }
 ```
+
+## Technical Implementation
+
+### Agent System
+
+Mano uses a tool-based agent system where the LLM can choose to:
+
+1. **Find Restaurants** - Query the Google Places API with specific parameters like location, cuisine type, and other filters
+2. **Browse Websites** - Navigate to restaurant websites and extract menu information using browser automation
+
+The agent loop works as follows:
+1. User query is sent to the agent
+2. The LLM analyzes the query and chooses appropriate tools to use
+3. Tool execution results are fed back to the LLM
+4. The process repeats until the LLM has enough information to provide a final response
+5. A formatted response with restaurant recommendations is returned to the user
+
+### Future Enhancements
+
+- User preferences and history tracking with memory to provide more personalized recommendations over time
