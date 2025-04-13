@@ -27,7 +27,7 @@ export class RestaurantAgent {
   }
   
   async loop(conversation: OpenAI.Chat.ChatCompletionMessageParam[]): Promise<string> {
-    const response = await this.llm.chat.completions.create({
+    let response = await this.llm.chat.completions.create({
       model: "deepseek-r1-distill-llama-70b",
       messages: conversation,
       temperature: 0.3,
@@ -39,17 +39,34 @@ export class RestaurantAgent {
       tool_choice: "auto",
     });
 
+    console.log(JSON.stringify(response, null, 2));
+    // @ts-ignore - The 'reasoning' field is not in the type definition but may be present in the response
+    delete response.choices[0].message.reasoning;
+
     const toolCall = response.choices[0].message.tool_calls?.[0];
     if (toolCall) {
       const toolName = toolCall.function.name;
       const toolArgs = JSON.parse(toolCall.function.arguments);
       
+      console.log(toolName, toolArgs);
       if (toolName === "findRestaurant") {
         const result = await this.findRestaurantTool.run(toolArgs);
+        console.log(result);
         conversation.push(response.choices[0].message);
+        conversation.push({
+          role: "tool",
+          content: result,
+          tool_call_id: toolCall.id,
+        });
       } else if (toolName === "useBrowser") {
         const result = await this.useBrowserTool.run(toolArgs);
+        console.log(result);
         conversation.push(response.choices[0].message);
+        conversation.push({
+          role: "tool",
+          content: result,
+          tool_call_id: toolCall.id,
+        });
       } else {
         throw new Error(`Unknown tool: ${toolName}`);
       }

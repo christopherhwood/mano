@@ -12,8 +12,9 @@ The system uses the Groq API with DeepSeek's powerful language model to understa
 
 - Express server with REST API endpoint
 - AI-powered restaurant recommendations using DeepSeek model on Groq
-- Google Places API integration for restaurant search
+- Google Places API integration for restaurant search with detailed field filtering
 - Browser automation with Stagehand for fetching menu information
+- OpenAI integration for web content analysis
 - Real-time conversation about restaurant options and menus
 - Modular architecture with separation of concerns
 
@@ -34,6 +35,8 @@ npx playwright install
   - `GROQ_API_KEY`: API key for accessing Groq
   - `GOOGLE_PLACES_API_KEY`: API key for Google Places API
   - `BROWSERBASE_API_KEY`: API key for Browserbase Stagehand
+  - `BROWSERBASE_PROJECT_ID`: Your Browserbase project ID
+  - `OPENAI_API_KEY`: API key for OpenAI (used by Stagehand)
 
 4. Start the development server:
 ```bash
@@ -93,14 +96,17 @@ Response:
 Mano uses a tool-based agent system where the LLM can choose to:
 
 1. **Find Restaurants** - Query the Google Places API with specific parameters like location, cuisine type, and other filters
+   - Enhanced with field masking to fetch detailed restaurant information including ratings, reviews, and amenities
 2. **Browse Websites** - Navigate to restaurant websites and extract menu information using browser automation
+   - Integrates with OpenAI for intelligent content analysis of restaurant websites
 
 The agent loop works as follows:
 1. User query is sent to the agent
 2. The LLM analyzes the query and chooses appropriate tools to use
-3. Tool execution results are fed back to the LLM
-4. The process repeats until the LLM has enough information to provide a final response
-5. A formatted response with restaurant recommendations is returned to the user
+3. Tool execution results are fed back to the LLM with proper tool response formatting
+4. Detailed logging provides transparency into the agent's decision-making process
+5. The process repeats until the LLM has enough information to provide a final response
+6. A formatted response with restaurant recommendations is returned to the user
 
 ### Future Enhancements
 

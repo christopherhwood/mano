@@ -10,6 +10,8 @@ const envSchema = z.object({
   GROQ_API_KEY: z.string().min(1),
   GOOGLE_PLACES_API_KEY: z.string().min(1),
   BROWSERBASE_API_KEY: z.string().min(1),
+  BROWSERBASE_PROJECT_ID: z.string().min(1),
+  OPENAI_API_KEY: z.string().min(1),
 });
 
 // Parse and validate environment variables

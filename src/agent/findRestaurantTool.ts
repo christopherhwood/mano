@@ -17,7 +17,11 @@ export default class FindRestaurantTool extends Tool<typeof findRestaurantSchema
         openNow: true,
         maxResultCount: 10,
         minRating: 3,
-      });
+      }, {otherArgs: {
+        headers: {
+          "X-Goog-Fieldmask": "places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.priceLevel,places.priceRange,places.allowsDogs,places.outdoorSeating,places.reviews"
+        }
+      }});
       return JSON.stringify(response);
     });
   }
