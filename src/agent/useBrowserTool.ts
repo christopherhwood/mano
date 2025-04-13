@@ -1,4 +1,5 @@
 import Tool from "./Tool.js";
+import env from '../config/env.js';
 import { Stagehand } from "@browserbasehq/stagehand";
 import { z } from "zod";
 
@@ -19,7 +20,7 @@ export default class UseBrowserTool extends Tool<typeof useBrowserSchema> {
 	Do not ask follow up questions, the user will trust your judgement.`,
 
         options: {
-          apiKey: process.env.OPENAI_API_KEY,
+          apiKey: env.OPENAI_API_KEY,
         }
       });
 
