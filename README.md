@@ -82,31 +82,7 @@ Request body:
 Response:
 ```json
 {
-  "result": {
-    "response": "Based on your request, I've found several great Italian restaurants in Boston known for their pasta dishes:\n\n1. **Giacomo's Ristorante** - A beloved local favorite with homemade pasta and rich sauces. Their butternut squash ravioli with sage brown butter is exceptional.\n\n2. **Sportello** - Modern Italian restaurant with handmade pasta by award-winning chef Barbara Lynch. Their tagliatelle with bolognese is outstanding.\n\n3. **Rino's Place** - Authentic family-owned spot with generous portions and incredible homemade pastas. The lobster ravioli is a must-try.\n\nMy top recommendation would be **Giacomo's Ristorante** for their consistently excellent pasta dishes, reasonable prices, and authentic Italian atmosphere. Would you like more details about any of these restaurants?",
-    "restaurants": [
-      {
-        "name": "Giacomo's Ristorante",
-        "address": "355 Hanover St, Boston, MA 02113",
-        "rating": 4.7,
-        "price_level": 2,
-        "place_id": "ChIJLbDVR6dwcUYRmNrxD0_O2zA",
-        "menu": [
-          {
-            "name": "Butternut Squash Ravioli",
-            "description": "Handmade ravioli filled with butternut squash, served with sage brown butter sauce and topped with toasted walnuts",
-            "price": "$21.99"
-          },
-          {
-            "name": "Linguine Frutti di Mare",
-            "description": "Fresh linguine with clams, mussels, shrimp, and calamari in a light tomato sauce",
-            "price": "$25.99"
-          }
-        ],
-        "menu_source": "https://giacomosristorante-boston.com/menu"
-      }
-    ]
-  }
+  "result": "Based on your request, I've found several great Italian restaurants in Boston known for their pasta dishes:\n\n1. **Giacomo's Ristorante** - A beloved local favorite with homemade pasta and rich sauces. Their butternut squash ravioli with sage brown butter is exceptional.\n\n2. **Sportello** - Modern Italian restaurant with handmade pasta by award-winning chef Barbara Lynch. Their tagliatelle with bolognese is outstanding.\n\n3. **Rino's Place** - Authentic family-owned spot with generous portions and incredible homemade pastas. The lobster ravioli is a must-try.\n\nMy top recommendation would be **Giacomo's Ristorante** for their consistently excellent pasta dishes, reasonable prices, and authentic Italian atmosphere. Would you like more details about any of these restaurants?"
 }
 ```
 
