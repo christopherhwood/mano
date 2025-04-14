@@ -16,6 +16,7 @@ The system uses the Groq API with DeepSeek's powerful language model to understa
 - Browser automation with Stagehand for fetching menu information
 - OpenAI integration for web content analysis
 - Real-time conversation about restaurant options and menus
+- VAPI (Voice Agent) integration for using Mano as a tool in voice agent workflows
 - Modular architecture with separation of concerns
 
 ## Setup
@@ -61,7 +62,8 @@ src/
 ├── config/         # Configuration files
 │   └── env.ts      # Environment variables validation
 ├── controllers/    # Request handlers
-│   └── restaurantController.ts
+│   ├── restaurantController.ts
+│   └── vapiController.ts      # VAPI tool handler
 ├── routes/         # API routes
 │   └── restaurant.ts
 ├── types/          # TypeScript type definitions
@@ -89,6 +91,41 @@ Response:
 }
 ```
 
+### VAPI Tool Call Endpoint
+
+`POST /api/restaurant-agent/vapi`
+
+This endpoint supports using the restaurant agent as a tool for VAPI (Voice Agent) services.
+
+Request body:
+```json
+{
+  "message": {
+    "toolCallList": [
+      {
+        "id": "tool-call-id-1",
+        "function": {
+          "name": "restaurant-agent",
+          "arguments": "{\"userQuery\": \"I'm looking for Italian restaurants in Boston with good pasta options\"}"
+        }
+      }
+    ]
+  }
+}
+```
+
+Response:
+```json
+{
+  "results": [
+    {
+      "toolCallId": "tool-call-id-1",
+      "result": "Based on your request, I've found several great Italian restaurants in Boston..."
+    }
+  ]
+}
+```
+
 ## Technical Implementation
 
 ### Agent System
@@ -108,6 +145,16 @@ The agent loop works as follows:
 5. The process repeats until the LLM has enough information to provide a final response
 6. A formatted response with restaurant recommendations is returned to the user
 
+### Voice Agent Integration
+
+Mano can be used as a tool within VAPI (Voice Agent) workflows, allowing voice-based AI systems to leverage Mano's restaurant recommendation capabilities. The VAPI controller:
+
+- Accepts standardized tool call requests from VAPI services
+- Processes restaurant search queries through the RestaurantAgent
+- Returns structured results that can be integrated into voice conversations
+- Follows the VAPI tool protocol for seamless integration
+
 ### Future Enhancements
 
 - User preferences and history tracking with memory to provide more personalized recommendations over time
+- Additional VAPI tool integrations for expanded voice agent capabilities

@@ -18,11 +18,10 @@ export async function vapiToolCallController(req: Request, res: Response): Promi
     for (const toolCall of message.toolCallList) {
       const { id, function: { name, arguments: args } } = toolCall;
       
-      const argsObject = JSON.parse(args);
       // Handle different tool calls based on the name
       if (name === 'restaurant-agent') {
         const agent = new RestaurantAgent();
-        const result = await agent.run(argsObject.userQuery || '');
+        const result = await agent.run(args.userQuery || '');
         results.push({
           toolCallId: id,
           result
