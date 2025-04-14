@@ -80,6 +80,6 @@ export class RestaurantAgent {
   }
 
   async clean(response: string) {
-    return response.replace(/[*_~]/g, '');
+    return response.replace(/[*_~#]/g, '');
   }
 }
