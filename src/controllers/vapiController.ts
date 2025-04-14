@@ -22,9 +22,10 @@ export async function vapiToolCallController(req: Request, res: Response): Promi
       if (name === 'restaurant-agent') {
         const agent = new RestaurantAgent();
         const result = await agent.run(args.userQuery || '');
+        const cleanedResult = await agent.clean(result);
         results.push({
           toolCallId: id,
-          result
+          result: cleanedResult
         });
       } else {
         // Handle unknown tools
