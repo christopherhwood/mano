@@ -34,3 +34,6 @@ yarn-error.log*
 # OS specific
 .DS_Store
 Thumbs.db
+
+# Prisma generated files
+src/generated/prisma/
