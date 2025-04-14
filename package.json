@@ -4,7 +4,8 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && mkdir -p dist/generated && cp -r src/generated/prisma dist/generated/",
+    "postinstall": "prisma generate",
     "dev": "node --no-warnings --loader ts-node/esm src/index.ts",
     "start": "node dist/index.js",
     "test": "echo \"No tests specified\" && exit 0"
