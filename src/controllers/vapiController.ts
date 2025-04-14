@@ -31,10 +31,6 @@ async function handleUserAndSession(number: string, agentNumber: string, res: Re
 
   if (sessionCount >= parseInt(env.SESSION_LIMIT || '3') && !user.agent_number) {
     console.log(`User ${user.id} has reached session limit without signing up`);
-    res.status(403).json({
-      toolCallId: ,
-      message: env.SESSION_LIMIT_ERROR_MESSAGE
-    });
     return null;
   }
   
