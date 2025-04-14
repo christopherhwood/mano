@@ -4,6 +4,53 @@ import prisma from '../config/prisma.js';
 import { env } from 'process';
 
 /**
+ * Helper function to handle user and session management
+ * @param number - Customer phone number
+ * @param agentNumber - Agent phone number
+ * @param res - Express response object
+ * @returns The created session or null if session limit reached
+ */
+async function handleUserAndSession(number: string, agentNumber: string, res: Response) {
+  // Atomically find or create user based on phone number
+  const user = await prisma.user.upsert({
+    where: {
+      phone_number: number
+    },
+    update: {}, // No updates needed if user exists
+    create: {
+      phone_number: number
+    }
+  });
+
+  // Check if user already has 3 or more sessions and doesn't have an agent number assigned
+  const sessionCount = await prisma.session.count({
+    where: {
+      user_id: user.id
+    }
+  });
+
+  if (sessionCount >= parseInt(env.SESSION_LIMIT || '3') && !user.agent_number) {
+    console.log(`User ${user.id} has reached session limit without signing up`);
+    res.status(403).json({
+      error: 'Session limit reached',
+      message: env.SESSION_LIMIT_ERROR_MESSAGE
+    });
+    return null;
+  }
+  
+  // Create a new session for the user
+  const session = await prisma.session.create({
+    data: {
+      user_id: user.id,
+      phone_number: number,
+      agent_number: agentNumber
+    }
+  });
+  console.log(`Created new session with ID: ${session.id}`);
+  return session;
+}
+
+/**
  * Controller for handling Vapi tool calls
  */
 export async function vapiToolCallController(req: Request, res: Response): Promise<void> {
@@ -18,45 +65,16 @@ export async function vapiToolCallController(req: Request, res: Response): Promi
     const results = [];
 
     const customer = message.customer;
-    const number = customer.number;
-    const agentNumber = message.phoneNumber.number;
+    if (customer) {
+      const number = customer.number;
+      const agentNumber = message.phoneNumber.number;
 
-    // Atomically find or create user based on phone number
-    const user = await prisma.user.upsert({
-      where: {
-        phone_number: number
-      },
-      update: {}, // No updates needed if user exists
-      create: {
-        phone_number: number
+      // Handle user and session management
+      const session = await handleUserAndSession(number, agentNumber, res);
+      if (!session) {
+        return; // Session limit reached, response already sent
       }
-    });
-
-    // Check if user already has 3 or more sessions and doesn't have an agent number assigned
-    const sessionCount = await prisma.session.count({
-      where: {
-        user_id: user.id
-      }
-    });
-
-    if (sessionCount >= parseInt(env.SESSION_LIMIT || '3') && !user.agent_number) {
-      console.log(`User ${user.id} has reached session limit without signing up`);
-      res.status(403).json({
-        error: 'Session limit reached',
-        message: env.SESSION_LIMIT_ERROR_MESSAGE
-      });
-      return;
     }
-    
-    // Create a new session for the user
-    const session = await prisma.session.create({
-      data: {
-        user_id: user.id,
-        phone_number: number,
-        agent_number: agentNumber
-      }
-    });
-    console.log(`Created new session with ID: ${session.id}`);
     
     for (const toolCall of message.toolCallList) {
       const { id, function: { name, arguments: args } } = toolCall;
