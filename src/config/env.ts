@@ -17,6 +17,8 @@ const envSchema = z.object({
   GOOGLE_PLACES_FIELD_MASK: z.string().min(1),
   USE_BROWSER_TOOL_DESCRIPTION: z.string().min(1),
   USE_BROWSER_TOOL_PROMPT: z.string().min(1),
+  SESSION_LIMIT: z.string().min(1),
+  SESSION_LIMIT_ERROR_MESSAGE: z.string().min(1),
 });
 
 // Parse and validate environment variables

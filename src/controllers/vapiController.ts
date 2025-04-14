@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import { RestaurantAgent } from '../agent/restaurantAgent.js';
+import prisma from '../config/prisma.js';
+import { env } from 'process';
 
 /**
  * Controller for handling Vapi tool calls
@@ -14,6 +16,47 @@ export async function vapiToolCallController(req: Request, res: Response): Promi
     }
 
     const results = [];
+
+    const customer = message.customer;
+    const number = customer.number;
+    const agentNumber = message.phoneNumber.number;
+
+    // Atomically find or create user based on phone number
+    const user = await prisma.user.upsert({
+      where: {
+        phone_number: number
+      },
+      update: {}, // No updates needed if user exists
+      create: {
+        phone_number: number
+      }
+    });
+
+    // Check if user already has 3 or more sessions and doesn't have an agent number assigned
+    const sessionCount = await prisma.session.count({
+      where: {
+        user_id: user.id
+      }
+    });
+
+    if (sessionCount >= parseInt(env.SESSION_LIMIT || '3') && !user.agent_number) {
+      console.log(`User ${user.id} has reached session limit without signing up`);
+      res.status(403).json({
+        error: 'Session limit reached',
+        message: env.SESSION_LIMIT_ERROR_MESSAGE
+      });
+      return;
+    }
+    
+    // Create a new session for the user
+    const session = await prisma.session.create({
+      data: {
+        user_id: user.id,
+        phone_number: number,
+        agent_number: agentNumber
+      }
+    });
+    console.log(`Created new session with ID: ${session.id}`);
     
     for (const toolCall of message.toolCallList) {
       const { id, function: { name, arguments: args } } = toolCall;

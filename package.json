@@ -15,12 +15,14 @@
   "description": "",
   "devDependencies": {
     "@types/node": "^22.14.1",
+    "prisma": "^6.6.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
   "dependencies": {
     "@browserbasehq/stagehand": "^2.1.0",
     "@googlemaps/places": "^2.0.1",
+    "@prisma/client": "^6.6.0",
     "@types/express": "^5.0.1",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
