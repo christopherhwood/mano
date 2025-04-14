@@ -6,7 +6,7 @@
   "scripts": {
     "build": "prisma generate && tsc && mkdir -p dist/generated && cp -r src/generated/prisma dist/generated/",
     "postinstall": "prisma generate",
-    "dev": "prisma generate && node --no-warnings --loader ts-node/esm src/index.ts",
+    "dev": "prisma generate && tsc --watch & nodemon --watch dist dist/index.js",
     "start": "node dist/index.js",
     "test": "echo \"No tests specified\" && exit 0"
   },
@@ -16,8 +16,10 @@
   "description": "",
   "devDependencies": {
     "@types/node": "^22.14.1",
+    "nodemon": "^3.1.9",
     "prisma": "^6.6.0",
     "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3"
   },
   "dependencies": {
