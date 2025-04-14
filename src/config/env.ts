@@ -16,6 +16,7 @@ const envSchema = z.object({
   FIND_RESTAURANT_TOOL_DESCRIPTION: z.string().min(1),
   GOOGLE_PLACES_FIELD_MASK: z.string().min(1),
   USE_BROWSER_TOOL_DESCRIPTION: z.string().min(1),
+  USE_BROWSER_TOOL_PROMPT: z.string().min(1),
 });
 
 // Parse and validate environment variables
