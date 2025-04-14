@@ -106,7 +106,7 @@ Request body:
         "id": "tool-call-id-1",
         "function": {
           "name": "restaurant-agent",
-          "arguments": "{\"userQuery\": \"I'm looking for Italian restaurants in Boston with good pasta options\"}"
+          "arguments": {"userQuery": "I'm looking for Italian restaurants in Boston with good pasta options"}
         }
       }
     ]
