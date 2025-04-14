@@ -73,7 +73,7 @@ export async function vapiToolCallController(req: Request, res: Response): Promi
     for (const toolCall of message.toolCallList) {
       const { id, function: { name, arguments: args } } = toolCall;
 
-      if (!session) {
+      if (customer && !session) {
         results.push({
           toolCallId: id,
           result: env.SESSION_LIMIT_ERROR_MESSAGE
