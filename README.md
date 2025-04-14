@@ -1,22 +1,23 @@
 # Mano
 
-A restaurant recommendation agent built with Node.js, Express, Groq, and Stagehand.
+A restaurant recommendation agent built with Node.js, Express, Groq, Stagehand, and Prisma.
 
 ## Overview
 
 Mano is an AI-powered restaurant recommendation system that helps users find and learn about restaurants that match their preferences. Using natural language conversations, users can specify their dining preferences and receive personalized recommendations complete with menu details, prices, and ratings.
 
-The system uses the Groq API with DeepSeek's powerful language model to understand user requests, Google Places API to find relevant restaurants, and Browserbase's Stagehand for scraping menu information from restaurant websites.
+The system uses the Groq API with Qwen's powerful language model to understand user requests, Google Places API to find relevant restaurants, and Browserbase's Stagehand for scraping menu information from restaurant websites.
 
 ## Features
 
 - Express server with REST API endpoint
-- AI-powered restaurant recommendations using DeepSeek model on Groq
+- AI-powered restaurant recommendations using Qwen model on Groq
 - Google Places API integration for restaurant search with detailed field filtering
 - Browser automation with Stagehand for fetching menu information
 - OpenAI integration for web content analysis
 - Real-time conversation about restaurant options and menus
-- VAPI (Voice Agent) integration for using Mano as a tool in voice agent workflows
+- VAPI (Voice Agent) integration for using Mano as a tool in voice agent workflows 
+- User session management with Prisma database integration
 - Modular architecture with separation of concerns
 
 ## Setup
@@ -38,6 +39,10 @@ npx playwright install
   - `BROWSERBASE_API_KEY`: API key for Browserbase Stagehand
   - `BROWSERBASE_PROJECT_ID`: Your Browserbase project ID
   - `OPENAI_API_KEY`: API key for OpenAI (used by Stagehand)
+  - `DATABASE_URL`: Prisma database connection URL
+  - `DIRECT_URL`: Direct database connection URL for Prisma
+  - `SESSION_LIMIT`: Maximum number of sessions allowed without signup
+  - `SESSION_LIMIT_ERROR_MESSAGE`: Custom error message for session limit reached
   - `AGENT_SYSTEM_PROMPT`: System prompt for the restaurant agent
   - `FIND_RESTAURANT_TOOL_DESCRIPTION`: Description for the restaurant search tool
   - `GOOGLE_PLACES_FIELD_MASK`: Field mask for Google Places API
@@ -139,12 +144,14 @@ Mano uses a tool-based agent system where the LLM can choose to:
 
 1. **Find Restaurants** - Query the Google Places API with specific parameters like location, cuisine type, and other filters
    - Enhanced with field masking to fetch detailed restaurant information including ratings, reviews, and amenities
+   - Filters results by minimum rating and ensures only open restaurants are shown
 2. **Browse Websites** - Navigate to restaurant websites and extract menu information using browser automation
-   - Integrates with OpenAI for intelligent content analysis of restaurant websites
+   - Integrates with OpenAI's computer-use-preview model for intelligent content analysis of restaurant websites
+   - Uses Browserbase's Stagehand for reliable browser automation with built-in ad blocking
 
 The agent loop works as follows:
 1. User query is sent to the agent
-2. The LLM analyzes the query and chooses appropriate tools to use
+2. The Qwen model on Groq analyzes the query and chooses appropriate tools to use
 3. Tool execution results are fed back to the LLM with proper tool response formatting
 4. Detailed logging provides transparency into the agent's decision-making process
 5. The process repeats until the LLM has enough information to provide a final response
@@ -159,7 +166,18 @@ Mano can be used as a tool within VAPI (Voice Agent) workflows, allowing voice-b
 - Returns structured results that can be integrated into voice conversations
 - Follows the VAPI tool protocol for seamless integration
 
+### Session Management
+
+Mano includes a session management system that:
+
+- Tracks user sessions using Prisma ORM with database integration
+- Limits the number of sessions per user based on configurable settings
+- Provides custom error messages when session limits are reached
+- Supports user signups for obtaining personal contact numbers
+
 ### Future Enhancements
 
 - User preferences and history tracking with memory to provide more personalized recommendations over time
 - Additional VAPI tool integrations for expanded voice agent capabilities
+- Enhanced restaurant data retrieval with more detailed menu information
+- Improved session analytics and user behavior tracking
