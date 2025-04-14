@@ -32,7 +32,7 @@ async function handleUserAndSession(number: string, agentNumber: string, res: Re
   if (sessionCount >= parseInt(env.SESSION_LIMIT || '3') && !user.agent_number) {
     console.log(`User ${user.id} has reached session limit without signing up`);
     res.status(403).json({
-      error: 'Session limit reached',
+      toolCallId: ,
       message: env.SESSION_LIMIT_ERROR_MESSAGE
     });
     return null;
@@ -64,21 +64,27 @@ export async function vapiToolCallController(req: Request, res: Response): Promi
 
     const results = [];
 
+    let session = null;
     const customer = message.customer;
     if (customer) {
       const number = customer.number;
       const agentNumber = message.phoneNumber.number;
 
       // Handle user and session management
-      const session = await handleUserAndSession(number, agentNumber, res);
-      if (!session) {
-        return; // Session limit reached, response already sent
-      }
+      session = await handleUserAndSession(number, agentNumber, res);
     }
     
     for (const toolCall of message.toolCallList) {
       const { id, function: { name, arguments: args } } = toolCall;
-      
+
+      if (!session) {
+        results.push({
+          toolCallId: id,
+          result: env.SESSION_LIMIT_ERROR_MESSAGE
+        });
+        continue;
+      }
+
       // Handle different tool calls based on the name
       if (name === 'restaurant-agent') {
         const agent = new RestaurantAgent();
