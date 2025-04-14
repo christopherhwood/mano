@@ -42,6 +42,9 @@ export class RestaurantAgent {
 
     console.log(JSON.stringify(response, null, 2));
 
+    // @ts-ignore reasoning is not on the response object but sometimes it's present
+    delete response.choices[0].message.reasoning;
+
     const toolCall = response.choices[0].message.tool_calls?.[0];
     if (toolCall) {
       const toolName = toolCall.function.name;
