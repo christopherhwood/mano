@@ -38,6 +38,11 @@ npx playwright install
   - `BROWSERBASE_API_KEY`: API key for Browserbase Stagehand
   - `BROWSERBASE_PROJECT_ID`: Your Browserbase project ID
   - `OPENAI_API_KEY`: API key for OpenAI (used by Stagehand)
+  - `AGENT_SYSTEM_PROMPT`: System prompt for the restaurant agent
+  - `FIND_RESTAURANT_TOOL_DESCRIPTION`: Description for the restaurant search tool
+  - `GOOGLE_PLACES_FIELD_MASK`: Field mask for Google Places API
+  - `USE_BROWSER_TOOL_DESCRIPTION`: Description for the browser tool
+  - `USE_BROWSER_TOOL_PROMPT`: System prompt for the browser tool
 
 4. Start the development server:
 ```bash
