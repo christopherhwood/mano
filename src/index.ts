@@ -6,6 +6,13 @@ import restaurantRoutes from './routes/restaurant.js';
 const app = express();
 app.use(express.json());
 
+// Add logging middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  console.log('Request body:', JSON.stringify(req.body, null, 2));
+  next();
+});
+
 // Register routes
 app.use('/api/restaurant-agent', restaurantRoutes);
 
