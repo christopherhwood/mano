@@ -70,14 +70,15 @@ src/
 │   ├── useBrowserTool.ts      # Browser automation tool
 │   └── restaurantAgent.ts     # Main agent implementation
 ├── config/         # Configuration files
-│   └── env.ts      # Environment variables validation
+│   ├── env.ts      # Environment variables validation
+│   └── prisma.ts   # Prisma client configuration
 ├── controllers/    # Request handlers
 │   ├── restaurantController.ts
 │   └── vapiController.ts      # VAPI tool handler
+├── generated/      # Generated Prisma client
+│   └── prisma/     # Prisma ORM files
 ├── routes/         # API routes
 │   └── restaurant.ts
-├── types/          # TypeScript type definitions
-│   └── index.ts
 └── index.ts        # Application entry point
 ```
 
