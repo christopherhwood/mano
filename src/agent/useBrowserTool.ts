@@ -10,14 +10,14 @@ const useBrowserSchema = z.object({
 
 export default class UseBrowserTool extends Tool<typeof useBrowserSchema> {
   constructor() {
-    super("useBrowser", "Use a browser to navigate websites and find information", useBrowserSchema, async (parameters) => {
+    super("useBrowser", "Use a browser to navigate websites and find information. Deliver queries as instructions to the browser agent in fully formed sentences. You almost always want to start with a google search url, for example 'https://www.google.com/search?q=best+restaurants+in+new+york+reddit'. Don't specify the site url in the google query, if you want to specify a website just name the site in the query.", useBrowserSchema, async (parameters) => {
       await this.stagehand.init();
       await this.stagehand.page.goto(parameters.url);
       const agent = this.stagehand.agent({
         provider: "openai",
         model: "computer-use-preview",
         instructions: `You are a helpful assistant that can use a web browser.
-	Do not ask follow up questions, the user will trust your judgement.`,
+	Do not ask follow up questions, the user will trust your judgement. Do your best to always provide a response and answer the user's question. Incomplete information is better than no information.`,
 
         options: {
           apiKey: env.OPENAI_API_KEY,
@@ -25,6 +25,13 @@ export default class UseBrowserTool extends Tool<typeof useBrowserSchema> {
       });
 
       const response = await agent.execute(parameters.query);
+      console.log('browser tool response: ', response);
+      if (!response.success) {
+        return 'Browser agent failed to find information';
+      }
+      if (!response.completed && !response.message) {
+        return 'Browser agent failed to find information';
+      }
       return response.message;
     });
   }

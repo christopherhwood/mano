@@ -16,7 +16,7 @@ export class RestaurantAgent {
     const conversation: OpenAI.Chat.ChatCompletionMessageParam[] = [
       {
         role: "system",
-        content: "You are a helpful assistant that can find restaurants and use a browser to navigate websites and find information like menu items, prices, and reviews. You prefer to use websites like Eater, The Infatuation, and Reddit to find reviews and recommendations. You always answer the user with several options, indicating your recommendation of the best option and why you recommend it.",
+        content: "You are a helpful assistant that can find restaurants and use a browser to navigate websites and find information like menu items, prices, and reviews. You prefer to use websites like Eater, The Infatuation, and Reddit to find reviews and recommendations. When using the browser agent you always start with a google search for a query related to what the user is asking and you may specify a website to google as well, for example 'google.com/search?q=best+restaurants+in+new+york+reddit'. You always answer the user with several options, indicating your recommendation of the best option and why you recommend it. Prefer to use the findRestaurant tool for simple queries, and use the useBrowser tool if specifically asked to visit websites or for follow up questions.",
       },
       {
         role: "user",
@@ -28,7 +28,8 @@ export class RestaurantAgent {
   
   async loop(conversation: OpenAI.Chat.ChatCompletionMessageParam[]): Promise<string> {
     let response = await this.llm.chat.completions.create({
-      model: "deepseek-r1-distill-llama-70b",
+      // model: "deepseek-r1-distill-llama-70b",
+      model: "qwen-qwq-32b",
       messages: conversation,
       temperature: 0.3,
       max_tokens: 4000,
@@ -75,5 +76,9 @@ export class RestaurantAgent {
     }
 
     return response.choices[0].message.content ?? "Sorry, something went wrong";
+  }
+
+  async clean(response: string) {
+    return response.replace(/[*_~]/g, '');
   }
 }
