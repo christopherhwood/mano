@@ -16,7 +16,7 @@ export async function vapiToolCallController(req: Request, res: Response): Promi
     const results = [];
     
     for (const toolCall of message.toolCallList) {
-      const { id, name, arguments: args } = toolCall;
+      const { id, function: { name, arguments: args } } = toolCall;
       
       // Handle different tool calls based on the name
       if (name === 'restaurant-agent') {
